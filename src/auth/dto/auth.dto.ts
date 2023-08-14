@@ -3,10 +3,12 @@ import { IsEmail,IsNotEmpty,IsString } from "class-validator"
 export class AuthDto{
     @IsEmail()
     @IsNotEmpty()
-    email:String;
+    email:string;
 
 
     @IsString()
     @IsNotEmpty()
-    password:String;
+    password:string;
+    firstName:string
+    lastName:string
 }
