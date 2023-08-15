@@ -1,6 +1,6 @@
-import { ForbiddenException, Injectable } from "@nestjs/common";
+import { ForbiddenException, Injectable, NotFoundException } from "@nestjs/common";
 import { PrismaService } from "src/prisma/prisma.service";
-import { AuthDto } from "./dto";
+import { AuthDto, ProfileDto } from "./dto";
 import *  as argon from 'argon2'
 import { JwtService } from "@nestjs/jwt";
 import { ConfigService } from "@nestjs/config";
@@ -40,7 +40,7 @@ export class AuthService{
     }
         
     }
-    async login(dto:AuthDto){
+    async login(dto:AuthDto):Promise<object>{
         try{
             const user=await this.prisma.user.findUnique({
                 where:{
@@ -59,7 +59,7 @@ export class AuthService{
                 )
             }
 
-        return {token:  this.signtoken(user.id,user.email)}
+        return {token: await this.signtoken(user.id,user.email)}
 
 
 
@@ -74,6 +74,23 @@ export class AuthService{
             UserId,email
         }
         return this.jwt.signAsync(payload,{expiresIn:'15m',secret:this.config.get('JWT_SECRET')})
+        }
+       async viewProfile(dto:ProfileDto):Promise<object>{
+        const profile=await this.prisma.user.findUnique({
+            where:{
+                email:dto.email
+            }
+        })
+        if(!profile){
+            throw new NotFoundException(
+                'User Not Found'
+            )
+        }
+        return {
+            user:profile
+        }
+
+
         }
 
 

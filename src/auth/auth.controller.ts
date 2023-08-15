@@ -1,7 +1,8 @@
-import { Body, Controller, Post} from "@nestjs/common";
+import { Body, Controller, Get, Post, UseGuards} from "@nestjs/common";
 import { AuthService } from "./auth.services";
-import { AuthDto } from "./dto";
+import { AuthDto, ProfileDto } from "./dto";
 import { dot } from "node:test/reporters";
+import { AuthGuard } from "./auth.guard";
 
 
 
@@ -21,6 +22,14 @@ export class AuthController {
     login(@Body() dto:AuthDto){
         return this.authService.login(dto)
     }
+    @UseGuards(AuthGuard)
+    @Get('profile')
+    profile(@Body()dto:ProfileDto){
+      return this.authService.viewProfile(dto)
+
+    }
+
+    
         
 
     
