@@ -2,11 +2,12 @@ import { ForbiddenException, Injectable } from "@nestjs/common";
 import { PrismaService } from "src/prisma/prisma.service";
 import { AuthDto } from "./dto";
 import *  as argon from 'argon2'
+import { JwtService } from "@nestjs/jwt";
 
 
 @Injectable()
 export class AuthService{
-    constructor(private prisma:PrismaService){}
+    constructor(private prisma:PrismaService,private jwt:JwtService){}
    
     async signup(dto:AuthDto){
         try{
@@ -25,6 +26,7 @@ export class AuthService{
                 createdAt:true
             }
         })
+        
         return user
     }
     catch(e){
@@ -55,7 +57,12 @@ export class AuthService{
                     'Credentials Incorrect'
                 )
             }
-            return user
+            const payload={id:user.id,email:user.email}
+            const token = this.jwt.signAsync(payload)
+
+        return{
+            token:await this.jwt.signAsync(payload)
+        }
 
 
 
