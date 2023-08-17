@@ -4,7 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { AuthDto, ProfileDto } from './dto';
+import { AuthDto } from './dto';
 import * as argon from 'argon2';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
@@ -70,18 +70,5 @@ export class AuthService {
       expiresIn: '15m',
       secret: this.config.get('JWT_SECRET'),
     });
-  }
-  async viewProfile(dto: ProfileDto): Promise<object> {
-    const profile = await this.prisma.user.findUnique({
-      where: {
-        email: dto.email,
-      },
-    });
-    if (!profile) {
-      throw new NotFoundException('User Not Found');
-    }
-    return {
-      user: profile,
-    };
   }
 }

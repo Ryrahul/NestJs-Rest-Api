@@ -62,7 +62,7 @@ export class BookmarkService {
         },
       });
       // console.log(bookmark.UserId)
-      console.log(UserId)
+      console.log(UserId);
       if (!bookmark || bookmark.UserId !== UserId) {
         throw new ForbiddenException('Permission Denied');
       }
@@ -74,7 +74,6 @@ export class BookmarkService {
           ...dto,
         },
       });
-       
     } catch (e) {
       return e.message;
     }
